@@ -1,0 +1,42 @@
+.lock-wrapper-page .fa-users {
+    left: 15px!important;
+    top: 10px;
+    font-size: 15px;
+    position: absolute;
+    z-index: 99;
+}
+.lock-wrapper-page .fa-key{
+    left: 15px!important;
+    top: 10px;
+    font-size: 15px;
+    position: absolute;
+    z-index: 99;
+}
+
+.lock-wrapper-page .form-control {
+    padding-left: 40px;
+    border: 1px solid #d6cece;
+}
+.input-group .form-control:first-child, .input-group-addon:first-child, .input-group-btn:first-child>.btn, .input-group-btn:first-child>.btn-group>.btn, .input-group-btn:first-child>.dropdown-toggle, .input-group-btn:last-child>.btn-group:not(:last-child)>.btn, .input-group-btn:last-child>.btn:not(:last-child):not(.dropdown-toggle){
+    border-radius:0px;
+}
+body, html{
+    background-size: cover;
+    background-repeat:no-repeat;
+    background-position:center;
+    background-color: #181818;
+}
+.c-login{
+    box-shadow: inset -2px 13px 20px 0px #ffffff;background:white;border-radius:1px;border:3px solid #ffffff;
+}
+.header-title{
+    margin-top:-20px;
+}
+.fsize{
+    font-size:13px;
+}
+.img-responsive{
+    width:180px;text-align:center;margin:auto;
+    position: relative;
+    bottom: 12px;
+}

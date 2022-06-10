@@ -1,0 +1,49 @@
+.img-home-img{
+width:10px;
+cursor:pointer;
+
+-webkit-transform: rotate(0deg);
+-moz-transform: rotate(0deg);
+-ms-transform: rotate(0deg);
+-o-transform: rotate(0deg);
+transform: rotate(0deg);
+
+-webkit-transform: width;
+-moz-transform: width;
+-ms-transform: width;
+-o-transform: width;
+transform: width;
+
+-webkit-transform: height;
+-moz-transform: height
+-ms-transform: height;
+-o-transform: height;
+transform: height;
+
+-webkit-transform-origin: 50% 50%;
+-moz-transform-origin: 50% 50%;
+-ms-transform-origin: 50% 50%;
+-o-transform-origin: 50% 50%;
+transform-origin: 50% 50%;
+
+-webkit-transition: 500ms ease all;
+-moz-transition: 500ms ease all;
+-o-transition: 500ms ease all;
+transition: 500ms ease all;
+
+}
+.img-home-img:hover{
+width:10px;
+-webkit-transform: rotate(360deg);
+-moz-transform: rotate(360deg);
+-ms-transform: rotate(360deg);
+-o-transform: rotate(360deg);
+transform: rotate(360deg);
+
+-webkit-transform-origin: 50% 50%;
+-moz-transform-origin: 50% 50%;
+-ms-transform-origin: 50% 50%;
+-o-transform-origin: 50% 50%;
+transform-origin: 50% 50%;
+
+}

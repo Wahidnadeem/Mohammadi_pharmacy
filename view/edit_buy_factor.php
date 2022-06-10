@@ -1,0 +1,180 @@
+<?php 
+    require_once '_config.php';
+
+    if(!isset($_GET['id'])){
+        header("location: list_buy_factor.php?error");
+        exit(); 
+    }
+
+    $id = base64_decode($_GET['id']);
+    $buy_factor_row     = select_one('buy_sell_drug',$id);
+    
+    $buy_sell_id = $buy_factor_row['id'];
+    $customer_buy_sell_payment  = $db->query("SELECT * FROM customer_buy_sell_payment WHERE buy_sell_drug_id = $buy_sell_id ")->fetch();
+
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <?php 
+        $title = "ویرایش فاکتور خرید";
+        require_once("_head.php");?>  
+
+    </head>
+    <body class="body" style="scrollbar-width: thin;">
+        
+        <div id="wrapper" class="wrapper animsition">
+            <!-- Navigation -->
+            <?php require_once("_navigation.php");?>
+            <!-- /.Navigation -->
+            <?php $menu = "buy_factor"; $sub = "list_buy_factor";?>
+            <!-- Sidebar -->
+            <?php require_once("_sidebar.php");?>
+            <!-- /.Sidebar -->            
+            <!-- /.Navbar  Static Side -->
+            <div class="control-sidebar-bg"></div>
+            <!-- Page Content -->
+            <div id="page-wrapper">
+                <!-- main content -->
+                <div class="content">
+                    <!-- Content Header (Page header) -->
+                    <div class="content-header">
+                        <div style="background:white;padding:10px;padding-top:6px;padding-bottom:7px;">
+                            <div class="header-title" style="margin-right:0px;">
+                                <ol class="breadcrumb">
+                                    <li class="active"><a href="index.php"><i class="fa fa-home"></i> صفحه اصلی</a></li>
+                                    <li class="active"> ویرایش  فاکتور خرید</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div> <!-- /. Content Header (Page header) -->
+                    <?php // require_once("message.php");?>
+                    <?php require_once "alert.php" ?>
+          
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-20">
+                            <div class="panel panel-warning lobidisable">
+                                <div class="panel-heading">
+                                    <div class="panel-title">
+                                        <h4 class=" bold bfont"><i class="fa fa-inbox"> </i>  ویرایش اطلاعات </h4>
+                                    </div>
+                                </div>
+                                <div class="panel-body bfont">
+                                    <br>
+                                    <form id="validation-form" class="form-horizontal form-label-left" method="post" action="action_buy_factor.php">               
+                                        
+                                        <input type="hidden" name="edit" value="1">
+                                        <input type="hidden" name="id" id="id" value="<?php echo base64_encode($buy_factor_row['id']);?>">
+                                        <input type="hidden" name="current_date" value="<?php if(isset($buy_factor_row['date'])) echo $buy_factor_row['date']  ?>"  >
+
+                                        <div class="item form-group">
+                                            <label class="control-label col-md-3 col-sm-12 col-xs-12 col-lg-3" for="code_number"> نمبر قرارداد  <span class="required">*</span></label>
+                                            <div class="col-md-5 col-sm-12 col-xs-12 col-lg-5">
+                                                <input type="text" id="code_number" value="<?php if(isset($buy_factor_row['code_number'])) echo $buy_factor_row['code_number'];?>" name="code_number" required="required" class="form-control cfont" readonly ="">
+                                            </div>
+                                        </div>
+
+                                        <div class="item form-group">
+                                            <label class="control-label col-md-3 col-sm-12 col-xs-12 col-lg-3" for="customer_id">  فروشنده دوا    <span class="required">*</span></label>
+                                            <div class="col-md-5 col-sm-12 col-xs-12 col-lg-5">
+                                                <select class="form-control basic-single" dir="rtl" name="customer_id" id="customer_id" required>
+                                                    <option value="">یکی را انتخاب کنید</option>
+                                                      <?php
+                                                            $customer = $db->query("SELECT * FROM `customers` WHERE `deleted` = '0' AND `type` = 'seller' ORDER BY id DESC");
+                                                            foreach ($customer as $rows){
+                                                                if ($rows['id'] == $buy_factor_row['customer_id']) {
+                                                                    echo '<option value = "'.$rows['id'].'" selected>'.$rows['fullname'].' </option>';
+                                                                }
+                                                                else{
+                                                                    echo '<option value ="'.$rows['id'].'"> '.$rows['fullname'].'</option>';
+                                                                }
+
+                                                            }
+                                                            ?>
+                                                </select>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="item form-group">
+                                            <label class="control-label col-md-3 col-sm-12 col-xs-12 col-lg-3" for="total_amount"> جمع کل <span class="required">*</span></label>
+                                            <div class="col-md-5 col-sm-12 col-xs-12 col-lg-5">
+                                                <input type="number" readonly="" id="total_amount" value="<?php if(isset($customer_buy_sell_payment['total_amount'])) echo $customer_buy_sell_payment['total_amount']  ?>" step="any" name="total_amount" required="required" class="form-control cfont" placeholder="مثلا : 1000">
+                                            </div>
+                                        </div>
+
+                                        <div class="item form-group">
+                                            <label class="control-label col-md-3 col-sm-12 col-xs-12 col-lg-3" for="payment_amount"> مقدار پرداخت <span class="required">*</span></label>
+                                            <div class="col-md-5 col-sm-12 col-xs-12 col-lg-5">
+                                                <input type="number" id="payment_amount" onkeyup="calculate_remain_price(this.value, total_amount.value)" step="any" value="<?php if(isset($customer_buy_sell_payment['payment_amount'])) echo $customer_buy_sell_payment['payment_amount']  ?>" name="payment_amount" required="required" class="form-control cfont" placeholder="مثلا : 1000 ">
+                                            </div>
+                                        </div>
+
+                                         <div class="item form-group">
+                                            <label class="control-label col-md-3 col-sm-12 col-xs-12 col-lg-3" for="remain"> الباقی <span class="required">*</span></label>
+                                            <div class="col-md-5 col-sm-12 col-xs-12 col-lg-5"> 
+                                                <input type="number" id="remain" step="any" value="<?php if(isset($customer_buy_sell_payment['remain_amount'])) echo $customer_buy_sell_payment['remain_amount']  ?>" name="remain" required="required" class="form-control cfont" readonly="" placeholder="مثلا : ">
+                                            </div>
+                                        </div>
+
+                                        <div class="item form-group">
+                                            <label class="control-label col-md-3 col-sm-12 col-xs-12 col-lg-3" for="date"> تاریخ قبلی </label>
+                                            <div class="col-md-5 col-sm-12 col-xs-12 col-lg-5">
+                                                <?php if(isset($buy_factor_row['date'])) echo $buy_factor_row['date'];?>
+                                            </div>
+                                        </div>
+
+                                        <div class="item form-group">
+                                            <label class="control-label col-md-3 col-sm-12 col-xs-12 col-lg-3" for="date"> تاریخ </label>
+                                            <div class="col-md-5 col-sm-12 col-xs-12 col-lg-5">
+                                                <input type="text" id="date" name="date" class="form-control p-date" autocomplete="off"  placeholder="تاریخ">
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-12 col-xs-12 col-lg-3" for="note">تفصیلات<span class=""></span></label>
+                                            <div class="col-md-5 col-sm-12 col-xs-12 col-lg-5">
+                                                <textarea id="note" name="note" class="form-control" rows="5" style="width:100%;height:20%;overflow-x:auto;" placeholder="لازمی نیست"><?php if(isset($buy_factor_row['note'])) echo $buy_factor_row['note'];?></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-lg-9 col-lg-offset-3">
+                                                <button type="submit" class="btn btn-warning" name="edit"><i class="fa fa-edit"> </i> ویرایش</button>
+                                                <a href="list_buy_factor.php">
+                                                <button type="button" class="btn btn-danger"><i class="fa fa-refresh"> </i> لغو یا بازکشت</button></a>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>                                
+                                <div class="panel-footer">&nbsp;</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div><!-- /#page-wrapper -->
+            </div><!-- /#wrapper -->
+        <!-- START CORE PLUGINS -->
+        <?php require_once("_script.php");?>
+    </body>
+</html>
+
+<script type="text/javascript">
+     function calculate_remain_price (total_price , payment_amount ){
+                var remain = 0;
+                var remain = payment_amount - total_price;
+                   $('#remain').val(remain);
+
+            }
+</script>
+
+
+<script type="text/javascript">
+         function startDateEndDate(date){
+                    $("#date").val(''); 
+            }
+            setTimeout(startDateEndDate, 10);
+    </script>
